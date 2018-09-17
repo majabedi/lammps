@@ -3,7 +3,7 @@
 # set these parameters
 # make sure neigh skin > 2*deltamove
 
-variable iter loop 3000            # number of Monte Carlo moves
+variable iter loop 30000            # number of Monte Carlo moves
 variable deltaperturb equal 0.2    # max size of initial perturbation per dim
 variable deltamove equal 0.1       # max size of MC move in one dimension
 variable density equal 1.0         # reduced LJ density of atoms on lattice
