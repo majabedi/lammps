@@ -1,0 +1,42 @@
+units	    lj
+dimension       3
+boundary        p p p
+
+atom_style      bond 
+bond_style      harmonic
+
+read_data      in.body
+
+group 1 type 1
+group 2 type 2
+group 3 type 3
+group 4 type 4
+group cell type 1 2
+
+pair_style lj/cut 10
+pair_coeff * * 0 0.5 #epsilon ,sigma
+pair_coeff 1 2 0.5 10 #epsilon ,sigma
+pair_coeff 1 3 0.5 11 #epsilon ,sigma
+pair_coeff 2 3 0.2 1.5 #epsilon ,sigma
+pair_coeff 2 4 0.2 2.5 #epsilon ,sigma
+pair_coeff 2 2 1 0.5 #epsilon ,sigma
+
+neigh_modify exclude type 3 3
+
+newton on on
+fix integration cell nve
+
+fix langevin all langevin 100.0 100.0 10000.0 699483 scale 4 0.02
+
+fix viscosity cell viscous 10
+
+fix bondDynamics all bond/break 10000 4 0. prob 1 49829
+
+#fix ID           group-ID finxName     Nevery  NucleusType Membranetype MembraneExtended  ECMtype Rmin migrationDir:x/y/z  prob  membrane-ECM  N-memNormal  N-memExtended 
+fix  cellMigrate  all      cell/migrate 5000    1           2            4                 3       6.   x                   1     4             1            5
+
+dump out all xyz 100 out.xyz
+variable time equal step
+fix printFix all print 1000 "${time}"
+
+run 10000000 
